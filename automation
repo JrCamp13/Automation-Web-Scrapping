@@ -1,0 +1,81 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from time import sleep
+import openpyxl
+
+driver = webdriver.Chrome()
+#1- Navegar té o site https://contabilidade-devaprender.netlify.app/
+driver.get('https://contabilidade-devaprender.netlify.app/')
+sleep(5)
+
+#2- digitar email
+
+#tag[@atributo= 'valor']
+
+email = driver.find_element(By.XPATH, "//input[@id='email']")
+sleep (2)
+email.send_keys('admin@contabilidade.com')
+
+#3 - digitar senha
+senha = driver.find_element(By.XPATH, "//input[@id='senha']")
+sleep (2)
+senha.send_keys('123456.')
+
+
+#4- clicar em entrar
+botao_entrar = driver.find_element(By.XPATH,"//button[@id='Entrar']")
+sleep(2)
+botao_entrar.click()
+sleep(5)
+
+#5- extrair as informações da planilha
+empresas = openpyxl.load_workbook ('./empresas.xlsx')
+pagina_empresas = empresas['dados empresas']
+
+for linha in pagina_empresas.iter_rows(min_row=2, values_only=True):
+    Nome_Da_Empresa, Email, Telefone, Endereco, Cnpj, Area_atuacao, Quantidade_de_funcionarios, Data_fundacao = linha
+
+    driver.find_element(By.ID,'nomeEmpresa').send_keys(Nome_Da_Empresa)
+    sleep(1)
+
+    driver.find_element(By.ID,'emailEmpresa').send_keys(Email)
+    sleep(1)
+
+    driver.find_element(By.ID,'telefoneEmpresa').send_keys(Telefone)
+    sleep(1)
+
+    driver.find_element(By.ID,'enderecoEmpresa').send_keys(Endereco)
+    sleep(1)
+
+    driver.find_element(By.ID,'cnpj').send_keys(Cnpj)
+    sleep(1)
+
+    driver.find_element(By.ID,'areaAtuacao').send_keys(Area_atuacao)
+    sleep(1)
+
+    driver.find_element(By.ID,'numeroFuncionarios').send_keys(Quantidade_de_funcionarios)
+    sleep(1)
+
+    driver.find_element(By.ID,'dataFundacao').send_keys(Data_fundacao)
+    sleep(1)
+
+
+# 6- prencher cada campo com informação da planilha
+# Limpar os campos após cada ciclo
+    driver.find_element(By.ID,'nomeEmpresa').clear()
+    driver.find_element(By.ID,'emailEmpresa').clear()
+    driver.find_element(By.ID,'telefoneEmpresa').clear()
+    driver.find_element(By.ID,'enderecoEmpresa').clear()
+    driver.find_element(By.ID,'cnpj').clear()
+    driver.find_element(By.ID,'areaAtuacao').clear()
+    driver.find_element(By.ID,'numeroFuncionarios').clear()
+    driver.find_element(By.ID,'dataFundacao').clear()
+
+    sleep(5)  # Aguardar para garantir que os campos sejam limpos antes do próximo ciclo
+
+#7- clicar em cadastrar
+
+botao_cadastrar = driver.find_element(By.XPATH, "//button[@id='Cadastrar']")
+sleep(2)
+botao_cadastrar.click()
+#8-repeat os passos 5 e 6
